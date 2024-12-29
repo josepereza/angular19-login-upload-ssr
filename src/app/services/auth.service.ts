@@ -1,4 +1,4 @@
-import { Injectable, signal,  PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable, signal,  PLATFORM_ID, Inject, afterNextRender } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
@@ -14,11 +14,17 @@ export class AuthService {
   private isBrowser: boolean;
 
 
-  private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
+  private tokenSubject = new BehaviorSubject<string | null>(null);
+
   currentUser = signal<User | null>(null);
 
   constructor(@Inject(PLATFORM_ID) private platformId: object  , private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    afterNextRender(() => {
+  this.tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
+    
+    });
 
   }
 
@@ -37,7 +43,11 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+
+    if (this.isBrowser) {
+        localStorage.removeItem('token');
+
+    }
     this.tokenSubject.next(null);
     this.currentUser.set(null);
   }
