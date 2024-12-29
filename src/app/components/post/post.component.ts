@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { Post } from '../../models/post.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-posts',
@@ -10,7 +11,12 @@ import { Post } from '../../models/post.model';
   template: `
     <div class="container mt-4">
     
-
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Posts</h2>
+        <button class="btn btn-primary" (click)="router.navigate(['/create-post'])">
+          Create New Post
+        </button>
+      </div>
       <h2 class="mt-5">All Posts</h2>
       <div class="row">
         @for (post of postService.allPosts(); track post.id) {
@@ -37,7 +43,8 @@ export class PostsComponent implements OnInit {
   //apiUrl='http://localhost:3000/uploads/'
 
   
-  constructor(public postService: PostService) {}
+  constructor(public postService: PostService,    public router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadPosts();

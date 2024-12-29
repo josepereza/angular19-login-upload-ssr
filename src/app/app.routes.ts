@@ -20,5 +20,10 @@ export const routes: Routes = [
     path: '', 
     redirectTo: '/posts', 
     pathMatch: 'full' 
-  }
+  },
+  { 
+    path: 'create-post', 
+    loadComponent: () => import('./components/create-post/create-post.components').then(m => m.CreatePostComponent),
+    canActivate: [AuthGuard]
+  },
 ];

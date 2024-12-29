@@ -26,4 +26,14 @@ export class PostService {
     return this.http.get<UserMe>(`${this.apiUrl}users/me`)
     .pipe(tap(posts => this.userPosts.set(posts.posts)));
   }
+
+  createPost(formData: FormData): Observable<Post> {
+    return this.http.post<Post>(`${this.apiUrl}posts`, formData)
+      .pipe(
+        tap(newPost => {
+          this.userPosts.update(posts => [...posts, newPost]);
+          this.allPosts.update(posts => [...posts, newPost]);
+        })
+      );
+  }
 }
